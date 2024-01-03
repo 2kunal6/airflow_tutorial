@@ -2,6 +2,7 @@
 
 
 
+
 ## Introduction
 
 - Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.  
@@ -11,6 +12,7 @@
   - By definining a schedule to run these on
   - Manually
   - Based on an external trigger. Ex. When data is loaded to a DB
+
 
 
 ## Installation
