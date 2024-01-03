@@ -25,12 +25,12 @@ docker compose up airflow-init
 docker compose up
 ```
 
-### Notes
+#### Notes
 - Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
 - Now simply put your python dag files (which we will create subsequently) into the dags folder created above, and you will be able to view and run your dags.
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
-### Why local installation?
+#### Why local installation?
 It's a good idea to have a local installation done in our personal machines for faster POCs, although in the real world we will have to dedicate a cluster for Airflow for high availability and sharing.
 - Local installation helps in faster POCs because with dedicated servers connected to production data it's easy to go wrong, or choke Spark servers if it's used to invoke Spark, if we are not careful.
 - Moreover, if Airflow is hosted in AWS, then there would be some wait time for the code sync to happen through CI/CD to the S3 location from where the MWAA picks up for example.
