@@ -39,6 +39,8 @@ It's a good idea to have a local installation done in our personal machines for 
 - Moreover, if Airflow is hosted in AWS, then there would be some wait time for the code sync to happen through CI/CD to the S3 location from where the MWAA picks up for example.
 - It also helps the team working on the same repo to not have to work through experimental changes.  We can commit only after a certain level of confidence in the code.
 
+![airflow_login_page](https://github.com/2kunal6/airflow_tutorial/assets/12296594/d0608d30-6e7f-4512-bd87-5e19dba7ea1e)
+
 
 ![Airflow Setup using Docker](images/airflow_setup_docker.png)
 ![Airflow Login Page](images/login.png)
