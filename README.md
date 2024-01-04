@@ -26,10 +26,6 @@ sudo docker compose up airflow-init
 sudo docker compose up
 ```
 
-![Airflow setup using docker](images/setup_docker.png)
-![Airflow Login Page](images/login.png)
-![Airflow Home Page](https://github.com/2kunal6/airflow_tutorial/blob/main/images/home.png)
-
 #### Notes
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 - Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
@@ -42,3 +38,9 @@ It's a good idea to have a local installation done in our personal machines for 
 - Local installation helps in faster POCs because with dedicated servers connected to production data it's easy to go wrong, or choke Spark servers if it's used to invoke Spark, if we are not careful.
 - Moreover, if Airflow is hosted in AWS, then there would be some wait time for the code sync to happen through CI/CD to the S3 location from where the MWAA picks up for example.
 - It also helps the team working on the same repo to not have to work through experimental changes.  We can commit only after a certain level of confidence in the code.
+
+
+![Airflow Setup using Docker](images/airflow_setup_docker.png)
+![Airflow Login Page](images/login.png)
+![Airflow Home Page](images/home.png)
+
