@@ -28,7 +28,7 @@ sudo docker compose up
 
 ![Airflow setup using docker](images/setup_docker.png)
 ![Airflow Login Page](images/login.png)
-![Airflow Home Page](images/home.png)
+![Airflow Home Page](https://github.com/2kunal6/airflow_tutorial/blob/main/images/home.png)
 
 #### Notes
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
