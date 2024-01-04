@@ -26,9 +26,9 @@ sudo docker compose up airflow-init
 sudo docker compose up
 ```
 
-<img src="images/setup_docker.png" alt="Airflow setup using docker"/>
-<img src="images/login.png" alt="Airflow Login Page."/>
-<img src="images/home.png" alt="Airflow Home Page"/>
+![Airflow setup using docker](images/setup_docker.png)
+![Airflow Login Page](images/login.png)
+![Airflow Home Page](images/home.png)
 
 #### Notes
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
