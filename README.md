@@ -18,15 +18,22 @@
 ## Installation
 
 A basic non-robust and non-production-grade setup is quite simple using Docker via the following simple commands:
+Note: You need to install curl and docker before running the following commands.  Here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
 ```
 curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.yaml'
 mkdir -p ./dags ./logs ./plugins ./config
-docker compose up airflow-init
-docker compose up
+sudo docker compose up airflow-init
+sudo docker compose up
 ```
 
+<img src="images/setup_docker.png" alt="Airflow setup using docker"/>
+<img src="images/login.png" alt="Airflow Login Page."/>
+<img src="images/home.png" alt="Airflow Home Page"/>
+
 #### Notes
+- Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 - Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
+  - Please use username=airflow and password=airflow
 - Now simply put your python dag files (which we will create subsequently) into the dags folder created above, and you will be able to view and run your dags.
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
