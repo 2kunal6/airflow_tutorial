@@ -46,3 +46,22 @@ It's a good idea to have a local installation done in our personal machines for 
 
 ![home](https://github.com/2kunal6/airflow_tutorial/assets/12296594/9dab61bc-dc91-41bc-9e4d-fccfb38b6b8b)
 
+
+
+## Creating a basic DAG
+
+- To create a dag we just need to define a dag with a task along with the imports.  A sample code is provided in src/dags/basic_dag.py
+- To view and run this dag, we just need to copy this python code with the DAG definition in the Airflow server's dags folder.
+  - ex. To make it available in our local Airflow installation, just copy it into the dags folder of the local installation.
+```
+cp src/dags/basic_dag.py <airflow-local-installation>/dags
+```
+- After copying, the dag should be visible in the Airflow homepage at http://localhost:8080/home
+- Ideally, the dag should be visible momentarily or after a few minutes of delay, but if it takes longer than that, then we can simply restart the Airflow docker service to view it immediately.
+- Once the dag is visible in the homepage, we can run it by clicking on the "Pause" button in the Actions column.
+- To view more details of the dag and it's run details, we can click on the dag link.  
+- In the dag details page we can see many details about the dag run including it's run status (success/failure/running etc.), the run history, the graph of it's task dependencies, the code etc.
+
+
+
+## Creating a basic DAG with schedule
