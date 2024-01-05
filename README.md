@@ -24,6 +24,7 @@ curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.y
 mkdir -p ./dags ./logs ./plugins ./config
 sudo docker compose up airflow-init
 sudo docker compose up
+
 ```
 
 #### Notes
@@ -59,8 +60,15 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 - After copying, the dag should be visible in the Airflow homepage at http://localhost:8080/home
 - Ideally, the dag should be visible momentarily or after a few minutes of delay, but if it takes longer than that, then we can simply restart the Airflow docker service to view it immediately.
 - Once the dag is visible in the homepage, we can run it by clicking on the "Pause" button in the Actions column.
+  
+![A_basic_dag](https://github.com/2kunal6/airflow_tutorial/assets/12296594/f8e4294f-6d82-4bb7-a5b0-54880a1b2b8a)
+
+  
 - To view more details of the dag and it's run details, we can click on the dag link.  
 - In the dag details page we can see many details about the dag run including it's run status (success/failure/running etc.), the run history, the graph of it's task dependencies, the code etc.
+  
+  ![Dag_details](https://github.com/2kunal6/airflow_tutorial/assets/12296594/6b15d194-56ec-4b69-af55-8d591be9cfe2)
+
 
 
 
