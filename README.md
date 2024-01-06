@@ -73,3 +73,13 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 ## Creating a basic DAG with schedule
+- A sample code is provided in src/dags/scheduled_dag.py
+- Notes:
+  - start_date parameter is necessary, and it tells us the time from which the dag should run.
+  - After creating a scheduled dag we need to trigger it manually the first time.
+  - use catch_up=False if you do not want to run the dag from the start_date, otherwise the dag will start running from the start_date to the present time. 
+  - The dag only runs after the current interval is over.
+    - Ex. If a dag is scheduled to run everyday at 9 am, and it is scheduled to start from today, then it will wait for the interval to end.  And therefore it will only run tomorrow at 9 am.
+  - It is a good idea to schedule the dags based on UTC, so that it is more consistent with other external dependencies like Spark servers, monitoring systems, external dependencies to other dags etc. because otherwise it gets confusing when daylight savings go on or off. 
+  - It is important to make the code (which is called by the DAG) idempotent, so that if by mistake the code runs twice, it does not dirty the data, especially in production.
+
