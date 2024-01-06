@@ -24,7 +24,6 @@ curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.y
 mkdir -p ./dags ./logs ./plugins ./config
 sudo docker compose up airflow-init
 sudo docker compose up
-
 ```
 
 #### Notes
@@ -32,6 +31,7 @@ sudo docker compose up
 - Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
   - Please use username=airflow and password=airflow
 - Now simply put your python dag files (which we will create subsequently) into the dags folder created above, and you will be able to view and run your dags.
+- To clean up the environment run: sudo docker compose down --volumes --remove-orphans
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
 #### Why local installation?
