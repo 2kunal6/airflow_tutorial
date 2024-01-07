@@ -93,4 +93,5 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 ## Creating a DAG that takes parameters
 - Sample code: src/dags/parameterized_dag.py
 - Notes:
-  - Triggering this dag will take us to a UI form, where we can override the paramters.
+ - Triggering this dag will take us to a UI form, where we can override the paramters.
+ - Passing parameters is helpful while testing, or to run a subset of tasks (as described later).
