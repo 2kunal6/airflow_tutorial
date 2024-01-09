@@ -92,7 +92,8 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 ## Creating a DAG that takes parameters
 - Sample code: src/dags/parameterized_dag.py
-- Notes:
- - It helps us provide runtime config through a UI form.
- - Passing parameters could be helpful when we need manual runs in case of bad runs, or simply for testing.
- - The sample code shows all the 4 methods that we can use to access the parameters namely: params, jinja, context, kwargs
+- Notes
+  - It helps us provide runtime config through a UI form.
+  - The default values provided will be overriden by user passed params through the UI.
+  - Passing parameters could be helpful when we need manual runs in case of bad runs, or simply for testing.
+  - The sample code shows all the 4 methods that we can use to access the parameters namely: params, jinja, context, kwargs
