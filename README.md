@@ -97,3 +97,18 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
   - The default values provided will be overriden by user passed params through the UI.
   - Passing parameters could be helpful when we need manual runs in case of bad runs, or simply for testing.
   - The sample code shows all the 4 methods that we can use to access the parameters namely: params, jinja, context, kwargs
+
+
+
+
+
+## Passing Admin Variables
+- Sample code:
+  - src/dags/admin_variables_dag.py
+  - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
+  - src/util/load_config.py
+  - The dags and utils folder can be directly copied to <airflow-installation-root-directory>
+  ```cp -r airflow_tutorial/src <airflow-installation-root-directory>```
+  - We can tune these locations as per our taste.
+- Notes
+  - The admin variables can help us pick environment related config, as shown in the code
