@@ -106,9 +106,12 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 - Sample code:
   - src/dags/admin_variables_dag.py
   - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
-  - src/util/load_config.py
-  - The dags and utils folder can be directly copied to <airflow-installation-root-directory>
-  ```cp -r airflow_tutorial/src <airflow-installation-root-directory>```
+  - src/dags/util/load_config.py
+  - The dags and config folders can be directly copied to <airflow-installation-root-directory>.  Please note the folders which are in the system path.
+```
+sudo rm -rf <airflow-installation-root-directory>/dags <airflow-installation-root-directory>/config 
+cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
+```
   - We can tune these locations as per our taste.
 - Notes
-  - The admin variables can help us pick environment related config, as shown in the code
+  - The admin variables can help us pick environment (dev/qa/uat/prod) related config, as shown in the code.

@@ -1,13 +1,13 @@
 common: &common
   common_properties:
-    common_property_1
+    common_property_1: common_property_val_1
 
 dev:
   <<: *common
   environment_properties:
-    property_1: dev
+    db_schema_name: dev
 
 prod:
   <<: *common
   environment_properties:
-    property_1: prod
+    db_schema_name: prod
