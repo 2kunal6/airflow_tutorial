@@ -90,6 +90,16 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 
+## xcom and task-graph
+- Sample code: src/dags/xcom_dag.py
+- Notes:
+  - This code shows the syntax to make task dependencies.  It can be done like this: task1 >> task2
+  - This code also shows xcom, which is allows talking among tasks.
+  - This can be helpful for example to parse and share the parameters passed to the dag at one place.  All the dependent tasks can pull from the same task, thus following the Don't-Repeat-Yourself principle.
+
+
+
+
 ## Creating a DAG that takes parameters
 - Sample code: src/dags/parameterized_dag.py
 - Notes
@@ -97,7 +107,6 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
   - The default values provided will be overriden by user passed params through the UI.
   - Passing parameters could be helpful when we need manual runs in case of bad runs, or simply for testing.
   - The sample code shows all the 4 methods that we can use to access the parameters namely: params, jinja, context, kwargs
-
 
 
 
@@ -113,5 +122,10 @@ sudo rm -rf <airflow-installation-root-directory>/dags <airflow-installation-roo
 cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 ```
   - We can tune these locations as per our taste.
-- Notes
+- Notes 
+  - Please note that admin variables can be accessed by all dags, whereas dag level parameters (which we pass from the UI) is available only to that particular dag from which that trigger was made.
   - The admin variables can help us pick environment (dev/qa/uat/prod) related config, as shown in the code.
+
+
+
+
