@@ -15,7 +15,7 @@ with DAG('a_external_sensor_caller_dag'):
         external_dag_id='a_external_sensor_callee_dag',
         external_task_id='a_external_sensor_callee_task',
         timeout=600,
-        execution_delta=timedelta(minutes=1),
+        execution_delta=timedelta(minutes=10),
         #schedule_interval=timedelta(seconds=5),
         start_date=pendulum.datetime(2024, 1, 6, tz="UTC")
     )
