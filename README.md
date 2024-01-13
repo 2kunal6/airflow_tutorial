@@ -129,3 +129,11 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 
 
+## External Sensors
+- Sample code:
+  - src/dags/external_sensor_callee_dag.py
+  - src/dags/external_sensor_caller_dag.py
+- Notes:
+  - This helps us to start a dag run only when a different dag run finishes.
+  - This can be used in situations in which for example a task makes the data available, and the downstream task needs to operate on that data only when it's completely available.
+  - Managing External Sensors could be a bit tricky given wait times in queue, considering execution date and start date etc.  We can also maintain a persistent metadata table for runs, which can also store more metadata information like the config, state etc. of the callee service (like Spark).
