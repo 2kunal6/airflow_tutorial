@@ -5,11 +5,12 @@
 
 ## Introduction
 
-- Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.  
+- Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.
+- Airflow can retry running the dags and tasks using the retries operator in case the service being called is down.
 - The workflows can be defined only using Python at this point.
 - The workflows are created as DAGs, so that there is no ambiguity in execution.
 - The DAGs can be triggered in the following ways:
-  - By definining a schedule to run these on
+  - By defining a schedule to run these on
   - Manually
   - Based on an external trigger. Ex. When data is loaded to a DB
 
@@ -137,3 +138,16 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
   - This helps us to start a dag run only when a different dag run finishes.
   - This can be used in situations in which for example a task makes the data available, and the downstream task needs to operate on that data only when it's completely available.
   - Managing External Sensors could be a bit tricky given wait times in queue, considering execution date and start date etc.  We can also maintain a persistent metadata table for runs, which can also store more metadata information like the config, state etc. of the callee service (like Spark).
+
+
+
+
+## Accessing Parameters
+- Sample code:
+  - src/dags/accessing_parameters_dag.py
+- Notes:
+  - A number of dag and task level details, along with their run level details are available and can be accessed.
+  - Accessing these variables within the code can help us write our logic based on these parameters.
+  - A non-exhaustive list of accessible variables can be found here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
+  - Ex 1. We can check inside code if all the tasks have finished running, and only then send the status of all the tasks for monitoring (discussed later).
+  - Ex 2. In case the dag failed to run on a given date because of Airflow going down, we can use the execution_date to run for that particular date.
