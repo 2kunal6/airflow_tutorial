@@ -151,3 +151,14 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
   - A non-exhaustive list of accessible variables can be found here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
   - Ex 1. We can check inside code if all the tasks have finished running, and only then send the status of all the tasks for monitoring (discussed later).
   - Ex 2. In case the dag failed to run on a given date because of Airflow going down, we can use the execution_date to run for that particular date.
+
+
+
+
+## Operators
+- There are a large number of operators available, both from Airflow and third-party ones, that can be used to accomplish different kind of tasks.
+- Here is a non-exhaustive list of the same grouped by providers: https://registry.astronomer.io/modules?typeName=Operators&limit=24&sorts=updatedAt%3Adesc
+- It's generally a good idea to use as few operators as possible to keep the application simple.  Here's a list of operators in order of importance (arguably):
+  - PythonOperator: To run Python code
+  - LivyOperator: To interact with the Spark cluster over REST APIs
+  - BashOperator: We can instead use python commands like os.system or suprocess to run the bash commands
