@@ -1,27 +1,25 @@
 salesforce:
   a_short_running_collection_dags:
     quip:
-      destination_table_name: quip_dest_short
-      source_table_name: quip_source_short
-      spark_query: quip_query_short
+      - metrics
+      - page_views
+      - permissions
+      - system
+      - user
     slack:
-      destination_table_name: slack_dest_short
-      source_table_name: slack_source_short
-      spark_query: slack_query_short
+      - metrics
+      - page_views
+      - system
+      - user
     tableau:
-      destination_table_name: tableau_dest_short
-      source_table_name: tableau_source_short
-      spark_query: tableau_query_short
+      - metrics
+      - page_views
   a_long_running_collection_dags:
     quip:
-      destination_table_name: quip_dest_long
-      source_table_name: quip_source_long
-      spark_query: quip_query_long
+      - java_logs
+      - linux_logs
     slack:
-      destination_table_name: slack_dest_long
-      source_table_name: slack_source_long
-      spark_query: slack_query_long
+      - java_logs
+      - linux_logs
     tableau:
-      destination_table_name: tableau_dest_long
-      source_table_name: tableau_source_long
-      spark_query: tableau_query_long
+      - python_logs
