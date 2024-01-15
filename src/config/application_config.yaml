@@ -1,0 +1,27 @@
+salesforce:
+  a_short_running_collection_dags:
+    quip:
+      destination_table_name: quip_dest_short
+      source_table_name: quip_source_short
+      spark_query: quip_query_short
+    slack:
+      destination_table_name: slack_dest_short
+      source_table_name: slack_source_short
+      spark_query: slack_query_short
+    tableau:
+      destination_table_name: tableau_dest_short
+      source_table_name: tableau_source_short
+      spark_query: tableau_query_short
+  a_long_running_collection_dags:
+    quip:
+      destination_table_name: quip_dest_long
+      source_table_name: quip_source_long
+      spark_query: quip_query_long
+    slack:
+      destination_table_name: slack_dest_long
+      source_table_name: slack_source_long
+      spark_query: slack_query_long
+    tableau:
+      destination_table_name: tableau_dest_long
+      source_table_name: tableau_source_long
+      spark_query: tableau_query_long
