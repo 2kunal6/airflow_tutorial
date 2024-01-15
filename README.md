@@ -6,9 +6,16 @@
 ## Introduction
 
 - Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.
-- Airflow can retry running the dags and tasks using the retries operator in case the service being called is down.
-- The workflows can be defined only using Python at this point.
-- The workflows are created as DAGs, so that there is no ambiguity in execution.
+- Without Airflow, to achieve the same, we would have to write and maintain complex shell/python scripts, cron job logic, DB stored procedures etc.  This complexity would have been compounded if we would have to orchestrate these disparate flows to achieve a single outcome.
+- These are a few important concepts in Airflow:
+  - DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
+    - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down for sometime.
+    - schedule: cron value that lets us schedule runs at a complex level like daily, weekly, at particular timings etc.
+  - Task: A single unit of work in an Airflow DAG
+    - retries: retrying at task level
+  - Operators: Collection of operating modules that create a task.  
+    - There are an ocean of Operators available to achieve a range of tasks starting with an EmptyOperator that literally does nothing, to ranging to specific tasks in specific domains like Slack, AWS, Spark etc.
+    - This is further discussed in detail in a later topic.
 - The DAGs can be triggered in the following ways:
   - By defining a schedule to run these on
   - Manually
