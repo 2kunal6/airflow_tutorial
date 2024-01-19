@@ -59,12 +59,16 @@ def get_data_load_operator(app, table_type):
                                      # If we use execution_date then we might get the wrong date if Airflow server goes down for an entire day
                                      'run_date': '{{ params.manual_data_load_date | default(data_interval_end) }}'
                                      },
-                          python_callable=load_data)
+                          python_callable=load_data,
+                          retries=1
+                          )
 
 
 for dag_type in app_config['salesforce']:
     with DAG(dag_id=dag_type,
-             params={"manual_data_load_date": "replace date with the date for which you want to load the data"}
+             params={"manual_data_load_date": "replace date with the date for which you want to load the data"},
+             max_active_runs=1,
+             max_active_tasks=2
              ) as dag:
         send_metrics_task = PythonOperator(task_id = f'{dag_type}_metric_task',
                                            python_callable = send_metrics,
