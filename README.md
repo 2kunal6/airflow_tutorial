@@ -8,6 +8,8 @@
 - Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.
 - Without Airflow, to achieve the same, we would have to write and maintain complex shell/python scripts, cron job logic, DB stored procedures etc.  This complexity would have been compounded if we would have to orchestrate these disparate flows to achieve a single outcome.
 - There are a lot many tools we can use to create data pipelines ranging form Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
+- The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like: run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluation all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (hellpful in case of sync failures etc.), color coded information about status of runs, and many more things.
+- In addition to the above the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun tasks.  This can be helpful for example when we just need to rerun only a few tasks.
 - These are a few important concepts in Airflow:
   - DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
     - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down for sometime.
@@ -151,8 +153,7 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 
 ## Accessing Parameters
-- Sample code:
-  - src/dags/accessing_parameters_dag.py
+- Sample code: src/dags/accessing_parameters_dag.py
 - Notes:
   - A number of dag and task level details, along with their run level details are available and can be accessed.
   - Accessing these variables within the code can help us write our logic based on these parameters.
@@ -170,3 +171,23 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
   - PythonOperator: To run Python code
   - LivyOperator: To interact with the Spark cluster over REST APIs
   - BashOperator: We can instead use python commands like os.system or suprocess to run the bash commands
+
+
+
+
+## A Complete DAG
+- Sample Code: src/dags/complete_lifecycle_dag.py
+- Notes:
+  - This dag brings together many things we learnt here.
+  - This dag builds from a config file src/config/application_config.yaml
+  - This config file defines all dags, and corresponding tasks.
+  - At the top level we have created 2 types of dags - short and long running ones. 
+    - We can start the long running ones after the short running ones finishes, so that we don't overwhelm the queue.
+  - Similarly, we can run the dev dags a few hours before prod, so that in case of bugs we get notified, and we fix the issues before the prod ones run (or atleast stop the prod dags to not dirty the data).
+  - On a similar note, for dev or uat we do not need to load the entire data.  We just have to see if there's any change that might result in a bad data load.  Therefore, it's enough to load some partial subset of the data if possible.  This design does just that based on environment.
+  - In this design, we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each dag.
+    - Both these designs each have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable.  In case of manual runs we can just press one button instead of having to press many.  Similarly, we can see the status of all runs in one/few pages.
+  - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
+  - 
+  - Other:
+    - Use server side git hooks to disallow code that has not passed in dev/uat
