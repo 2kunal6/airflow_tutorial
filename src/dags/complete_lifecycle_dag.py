@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 from common.common_tasks import send_metrics
 from util.load_config import load_config
 
+import pendulum
 import yaml
 
 
@@ -68,7 +69,10 @@ for dag_type in app_config['salesforce']:
     with DAG(dag_id=dag_type,
              params={"manual_data_load_date": "replace date with the date for which you want to load the data"},
              max_active_runs=1,
-             max_active_tasks=2
+             max_active_tasks=2,
+             catchup=False,
+             start_date=pendulum.datetime(2024, 1, 6, tz="UTC"),
+             schedule=config['airflow_properties'][dag_type]['dag_start_time']
              ) as dag:
         send_metrics_task = PythonOperator(task_id = f'{dag_type}_metric_task',
                                            python_callable = send_metrics,

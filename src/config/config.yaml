@@ -4,10 +4,20 @@ common: &common
 
 dev:
   <<: *common
+  airflow_properties:
+    a_short_running_collection_dags:
+      dag_start_time: '0 6 * * *'
+    a_long_running_collection_dags:
+      dag_start_time: '0 7 * * *'
   environment_properties:
     db_schema_name: dev
 
 prod:
   <<: *common
+  airflow_properties:
+    a_short_running_collection_dags:
+      dag_start_time: '0 11 * * *'
+    a_long_running_collection_dags:
+      dag_start_time: '0 13 * * *'
   environment_properties:
     db_schema_name: prod
