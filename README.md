@@ -7,6 +7,7 @@
 
 - Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.
 - Without Airflow, to achieve the same, we would have to write and maintain complex shell/python scripts, cron job logic, DB stored procedures etc.  This complexity would have been compounded if we would have to orchestrate these disparate flows to achieve a single outcome.
+- There are a lot many tools we can use to create data pipelines ranging form Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
 - These are a few important concepts in Airflow:
   - DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
     - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down for sometime.
