@@ -10,6 +10,7 @@
 - There are a lot many tools we can use to create data pipelines ranging form Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
 - The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like: run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluation all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (hellpful in case of sync failures etc.), color coded information about status of runs, and many more things.
 - In addition to the above the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun tasks.  This can be helpful for example when we just need to rerun only a few tasks.
+  - Using the clear button, we can run only a subset of tasks, if required.
 - These are a few important concepts in Airflow:
   - DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
     - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down for sometime.
@@ -188,6 +189,14 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
   - In this design, we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each dag.
     - Both these designs each have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable.  In case of manual runs we can just press one button instead of having to press many.  Similarly, we can see the status of all runs in one/few pages.
   - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
-  - 
+  - To run only a subset of tasks:
+    - Use the clear button to clear only tasks that we wish to run.
+    - For dates which are not visible in the UI, pass the date as parameter.  Now, passing the date as the parameter will run all the tasks, but since the tasks are idempotent, we can update the LOAD_DATA_METADATA_LOG accordingly to run only the tasks we wish to for a particular date.
+    - If at all we want to write a feature to run only a subset of tasks for a particular date, then we can simply pass the subset of tasks we wish to run, and parse it in an upstream operator (upstream operator for an operator is the one which runs before this operator).  We can then just run a dummy queries for the tasks not required to run.
+  - Monitoring:
+    - The send_metrics_task tasks send metrics to a monitoring app like Grafana.
+    - We can then set alerts in the monitoring system to alert us for number of failures if any, or to alert us if the dag did not complete its run by the expected time.
+    - trigger_rule = 'all_done' tells the task to run it only when all the upstream tasks have finished running
   - Other:
     - Use server side git hooks to disallow code that has not passed in dev/uat
+    - 
