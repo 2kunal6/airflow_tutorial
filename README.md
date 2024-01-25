@@ -197,6 +197,17 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
     - The send_metrics_task tasks send metrics to a monitoring app like Grafana.
     - We can then set alerts in the monitoring system to alert us for number of failures if any, or to alert us if the dag did not complete its run by the expected time.
     - trigger_rule = 'all_done' tells the task to run it only when all the upstream tasks have finished running
-  - Other:
-    - Use server side git hooks to disallow code that has not passed in dev/uat
-    - 
+  - For Airflow calling heavy jobs like Spark, we might want to limit the number of jobs we request, so as to not choke the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
+    - Please note that this is different from max_active_runs which says the number of dag runs itself that can be active. 
+    - It's generally a good idea to set max_active_runs=1, so that we run only one dag at a time, and if there's logic build upon previous runs, they work.  Plus debugging and monitoring gets easier with this. 
+  - Running adhoc scripts:
+    - At times we might want to run adhoc scripts to say create/delete table, or to update columns etc.  This can be done directly at the DB level, but it's better to make it go through Airflow so that it goes through the CI/CD pipeline of review/running-test-cases etc.
+    - To achieve this, we have a number of options:
+      - 1. Create a dag that takes the query as a parameter and runs it.
+      - 2. If there are a number of queries at once, then we can create a dag that dynamically create tasks on the fly by going through the all scripts in a adhoc-query-directory similar to how we read the yaml file in complete_lifecycle_dag.py
+  - Data Quality Checks:
+    - Data Quality checks are important to not only ensure that our Airflow jobs are running fine, but also in general to evaluate data from a business perspective i.e. to check if other data collection subsystems are running fine.
+    - The Data Quality check jobs can be called after the expected time of completion of the dags, or using external-sensors.
+    - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones involving ML (like finding outliers in count, or outliers in row values etc.).
+  - Developer Productivity: 
+    - Use client side, and server side git hooks to disallow code that has not passed in dev/uat.
