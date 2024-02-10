@@ -31,11 +31,14 @@
 
 A basic non-robust and non-production-grade setup is quite simple using Docker via the following simple commands.  But please note thatyou need to install curl and docker before running the following commands.  Here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
 ```
+mkdir airflow_local
+cd airflow_local
 curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.yaml'
 mkdir -p ./dags ./logs ./plugins ./config
 sudo docker compose up airflow-init
 sudo docker compose up
 ```
+It's a good idea to have a local installation done in our personal machines for faster POCs, especially when Airflow is hosted in cloud.
 
 #### Notes
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
@@ -44,12 +47,6 @@ sudo docker compose up
 - Now simply put your python dag files (which we will create later in this tutorial) into the dags folder created above.  Once we put these dag files in the dags folder created above, they will be available to view and run in the Airflow UI.
 - To clean up the environment run: sudo docker compose down --volumes --remove-orphans
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
-
-#### Why local installation?
-It's a good idea to have a local installation done in our personal machines for faster POCs, although in the real world we will have to dedicate a cluster for Airflow for high availability and sharing.
-- Local installation helps in faster POCs because with dedicated servers connected to production data it's easy to go wrong, or choke Spark servers if it's used to invoke Spark, if we are not careful.
-- Moreover, if Airflow is hosted in AWS, then there would be some wait time for the code sync to happen through CI/CD to the S3 location from where the MWAA picks up for example.
-- It also helps the team working on the same repo to not have to work through experimental changes.  We can commit only after a certain level of confidence in the code.
 
 
 ![setup_docker](https://github.com/2kunal6/airflow_tutorial/assets/12296594/76595eaa-3023-4d1f-8d1a-3cb4f708d962)
