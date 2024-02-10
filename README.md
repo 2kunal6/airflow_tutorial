@@ -20,13 +20,19 @@
   - retries: retrying at task level
 - Operators: Operating modules that create a task.  
   - There is an ocean of Operators available to achieve a range of tasks starting from an EmptyOperator (that literally does nothing), to specific tasks in specific domains like Slack, AWS, Spark etc.
+
+
+
+## How to access?
+
+- We can access Airflow via the Airflow UI or the Command Line Interface.  
+- The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluating all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (helpful in case of sync failures etc.), color coded information about status of runs, and many more things.
+- In addition to above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.  This can be helpful for example when we just need to rerun only a few tasks.
+  - Using the clear button, we can run only a subset of tasks, if required.
 - The DAGs can be triggered in the following ways:
   - By defining a schedule to run these on.
   - Manually.
   - Based on an external trigger. Ex. When data is loaded to a DB.
-- We can access Airflow via the Airflow UI.  The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluating all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (helpful in case of sync failures etc.), color coded information about status of runs, and many more things.
-- In addition to above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.  This can be helpful for example when we just need to rerun only a few tasks.
-  - Using the clear button, we can run only a subset of tasks, if required.
   
 
 
