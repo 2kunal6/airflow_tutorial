@@ -120,17 +120,18 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 ## Creating a DAG that takes parameters
+- Being able to pass parameters is useful when we want to run dags manually.  This can be useful while testing for example, where we pass the dates for which to load data.
 - Sample code: src/dags/parameterized_dag.py
 - Notes
   - It helps us provide runtime config through a UI form.
   - The default values provided will be overriden by user passed params through the UI.
-  - Passing parameters could be helpful when we need manual runs in case of bad runs, to run adhoc scripts to create/update/delete from tables, or simply for testing.
-  - The sample code shows all the 4 methods that we can use to access the parameters namely: params, jinja, context, kwargs
+  - The sample code shows all the 4 ways to access the parameters namely: params, jinja, context, kwargs
 
 
 
 
 ## Passing Admin Variables
+- The parameters mentioned above are passed to a DAG and only applicable to that particular dag, whereas Admin variables applies to all dags in an Airflow setup.  It can be useful for example to define the run environment (dev/uat/prod) for example.
 - Sample code:
   - src/dags/admin_variables_dag.py
   - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
@@ -141,9 +142,6 @@ sudo rm -rf <airflow-installation-root-directory>/dags <airflow-installation-roo
 cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 ```
   - We can tune these locations as per our taste.
-- Notes 
-  - Please note that admin variables can be accessed by all dags, whereas dag level parameters (which we pass from the UI) is available only to that particular dag from which that trigger was made.
-  - The admin variables can help us pick environment (dev/qa/uat/prod) related config, as shown in the code.
 
 
 
