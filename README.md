@@ -61,9 +61,9 @@ Now knowing what Airflow is and having set it up, let's write some code.  We wil
 
 ## Creating a basic DAG
 
-- To create a dag we just need to define a dag with a task along with the imports.  A sample code is provided in src/dags/basic_dag.py
-- To view and run this dag, we just need to copy this python code with the DAG definition in the Airflow server's dags folder.
-  - ex. To make it available in our local Airflow installation, just copy it into the dags folder of the local installation.
+- To create a dag we just need to define a dag inside a python file along with a task.  A sample code is provided in src/dags/basic_dag.py
+- To view and run this dag, we just need to copy this python code in the Airflow server's dags folder.
+  - Ex: To make it available in our local Airflow installation, just copy it into the dags folder of the local installation.
 ```
 cp src/dags/basic_dag.py <airflow-local-installation>/dags
 ```
@@ -83,6 +83,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 ## Creating a basic DAG with schedule
+- Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular because instead of writing and maintaining our own schedule logic, we can simply rely on Airflow to do this for us.
 - Sample code: src/dags/scheduled_dag.py
 - Notes:
   - start_date parameter is necessary, and it tells us the time from which the dag should run.
@@ -95,18 +96,17 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 ![next_inteval_run](https://github.com/2kunal6/airflow_tutorial/assets/12296594/63958f64-1dc6-4627-a86c-57aeecc946ff)
 
   - It is a good idea to schedule the dags based on UTC, so that it is more consistent with other external dependencies like Spark servers, monitoring systems, external dependencies to other dags etc. because otherwise it gets confusing when daylight savings go on or off. 
-  - It is important to make the code (which is called by the DAG) idempotent, so that if by mistake the code runs twice, it does not dirty the data, especially in production.
+  - It is important to make the code (which is called by the DAG) idempotent, so that unintended reruns do not dirty the data, especially in production.
 
 
 
 
 ## xcom and task-graph
+- Task graph is the directed acyclic graph of tasks.  This directed structure tells us the order in which the tasks will run.  The dependent tasks run only after the predecessors have finished running.  We can further control this to have one or all predecessors finish before the dependent runs.  Controls are also available to define the finish-states after which the dependents will start.  For example, run the dependents only after the predecessors finished running successfully.
+- Different tasks in a DAG can share information with each other during the DAG runs, and to achieve this Airflow provides a concept call xcom using which we can push and pull key-value pairs.
 - Sample code: src/dags/xcom_dag.py
 - Notes:
-  - This code shows the syntax to make task dependencies.  It can be done like this: task1 >> task2
-  - This code also shows xcom, which is allows talking among tasks.
-  - This can be helpful for example to parse and share the parameters passed to the dag at one place.  All the dependent tasks can pull from the same task, thus following the Don't-Repeat-Yourself principle.
-
+  - This code shows the syntax to make task dependencies.  The syntax to make task2 dependent on task1 (i.e. task2 runs only after task1 finishes) task1 >> task2
 
 
 
