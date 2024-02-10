@@ -56,6 +56,8 @@ It's a good idea to have a local installation done in our personal machines for 
 ![home](https://github.com/2kunal6/airflow_tutorial/assets/12296594/9dab61bc-dc91-41bc-9e4d-fccfb38b6b8b)
 
 
+Now knowing what Airflow is and having set it up, let's write some code.  We will start with simpler concepts and gradually move to more complex ones.  By the end of this tutorial we will write a complete dag which almost resembles a production grade Airflow app in the real world.
+
 
 ## Creating a basic DAG
 
