@@ -11,26 +11,25 @@
 - The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluating all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (helpful in case of sync failures etc.), color coded information about status of runs, and many more things.
 - In addition to above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.  This can be helpful for example when we just need to rerun only a few tasks.
   - Using the clear button, we can run only a subset of tasks, if required.
-- These are a few important concepts in Airflow:
+- These are some important concepts in Airflow:
   - DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
-    - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down for sometime.
-    - schedule: cron value that lets us schedule runs at a complex level like daily, weekly, at particular timings etc.
+    - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down briefly.
+    - schedule: cron value that lets us schedule runs.
   - Task: A single unit of work in an Airflow DAG
     - retries: retrying at task level
-  - Operators: Collection of operating modules that create a task.  
-    - There are an ocean of Operators available to achieve a range of tasks starting with an EmptyOperator that literally does nothing, to ranging to specific tasks in specific domains like Slack, AWS, Spark etc.
-    - This is further discussed in detail in a later topic.
+  - Operators: Operating modules that create a task.  
+    - There is an ocean of Operators available to achieve a range of tasks starting from an EmptyOperator (that literally does nothing), to specific tasks in specific domains like Slack, AWS, Spark etc.
+  - All these concepts are further discussed in detail later.
 - The DAGs can be triggered in the following ways:
-  - By defining a schedule to run these on
-  - Manually
-  - Based on an external trigger. Ex. When data is loaded to a DB
+  - By defining a schedule to run these on.
+  - Manually.
+  - Based on an external trigger. Ex. When data is loaded to a DB.
 
 
 
 ## Installation
 
-A basic non-robust and non-production-grade setup is quite simple using Docker via the following simple commands:
-Note: You need to install curl and docker before running the following commands.  Here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
+A basic non-robust and non-production-grade setup is quite simple using Docker via the following simple commands.  But please note thatyou need to install curl and docker before running the following commands.  Here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
 ```
 curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.yaml'
 mkdir -p ./dags ./logs ./plugins ./config
@@ -42,7 +41,7 @@ sudo docker compose up
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 - Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
   - Please use username=airflow and password=airflow
-- Now simply put your python dag files (which we will create subsequently) into the dags folder created above, and you will be able to view and run your dags.
+- Now simply put your python dag files (which we will create later in this tutorial) into the dags folder created above.  Once we put these dag files in the dags folder created above, they will be available to view and run in the Airflow UI.
 - To clean up the environment run: sudo docker compose down --volumes --remove-orphans
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
