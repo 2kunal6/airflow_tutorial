@@ -189,14 +189,15 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
     - In this design we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each task.
       - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable because we can simply add to the config to add more tasks and all tasks are readily available in a single page to view/rerun.
   - The Task Script:
-    - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
+    - The sample query provided in the load_data() function shows as a sample script and gives a generic idea on how to make the runs idempotent.  To make the runs idempotent we basically check if run already happened on a particular day, and proceed iff that didn't.  
+    - Similarly, to handle partial runs we persist run log info only after complete successful runs.  We also need to delete/override all incomplete data to avoid dupes.
   - Monitoring:
     - The send_metrics_task tasks send metrics to a monitoring app like Grafana.
-    - We can then set alerts in the monitoring system to alert us for number of failures if any, or to alert us if the dag did not complete its run by the expected time.
+    - We can then set alerts in the monitoring system to alert us for failures if any, or to alert us if the dag did not complete its run by the expected time.
     - trigger_rule = 'all_done' tells the task to run it only when all the upstream tasks have finished running
   - Data Quality Checks:
-    - Data Quality checks are important to not only ensure that our Airflow jobs are running fine, but also in general to evaluate data from a business perspective i.e. to check if other data collection subsystems are running fine.
-    - The Data Quality check jobs can be called after the expected time of completion of the dags, or using external-sensors.
+    - Data Quality checks are important to ensure that the Airflow jobs are running fine and that too not only from a technical pass/fail point of view but also from a business point of view. 
+    - The Data Quality check jobs can be called after the expected time of completion of the dags or using external-sensors.
     - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones involving ML (like finding outliers in count, or outliers in row values etc.).
 
 
