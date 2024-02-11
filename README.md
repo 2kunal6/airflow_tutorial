@@ -182,20 +182,15 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 - More or less we have learnt about all the concepts that we need to create a simple Airflow app that is almost production grade.  So let's bring all these concepts together, and write a complete dag.
 - Sample Code: src/dags/complete_lifecycle_dag.py
-- Notes:
-  - This dag builds from a config file src/config/application_config.yaml
-  - This config file defines all dags, and corresponding tasks.
-  - execution_date to rerun on particular date if dag run failed for some reason like Airflow going down
-  - At the top level we have created 2 types of dags - short and long running ones. 
-    - We can start the long running ones after the short running ones finishes, so that we don't overwhelm the queue.
-  - Similarly, we can run the dev dags a few hours before prod, so that in case of bugs we get notified, and we fix the issues before the prod ones run (or atleast stop the prod dags to not dirty the data).
-  - On a similar note, for dev or uat we do not need to load the entire data.  We just have to see if there's any change that might result in a bad data load.  Therefore, it's enough to load some partial subset of the data if possible.  This design does just that based on environment.
-  - In this design, we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each dag.
-    - Both these designs each have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable.  In case of manual runs we can just press one button instead of having to press many.  Similarly, we can see the status of all runs in one/few pages.
+- Understanding it bit by bit:
+  - This dag builds from a config file src/config/application_config.yaml which defines all dags and corresponding tasks.
+  - At the top level we have created 2 types of dags - short and long-running ones.  This is just to give an example that instead of repeating code we can create multiple dags from the same code.  This concept is called dynamic dags.  Moreover, this is common phenomenon in the real world where some tasks take longer than others.  In these situations we can start the long-running tasks only after the shorter ones finishes, so that we don't overwhelm the queue and make data available as soon as we can.
+  - In this design we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each task.
+    - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable because we can simply add to the config to add more tasks and all tasks are readily available in a single page to view/rerun.
   - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
   - To run only a subset of tasks:
     - Use the clear button to clear only tasks that we wish to run.
-    - For dates which are not visible in the UI, pass the date as parameter.  Now, passing the date as the parameter will run all the tasks, but since the tasks are idempotent, we can update the LOAD_DATA_METADATA_LOG accordingly to run only the tasks we wish to for a particular date.
+    - For dates which are not visible in the UI, we can pass the date as parameter but that will run all the tasks, and that is where the tasks being idempotent help, we can update the LOAD_DATA_METADATA_LOG accordingly to run only the tasks we wish to for a particular date.
     - If at all we want to write a feature to run only a subset of tasks for a particular date, then we can simply pass the subset of tasks we wish to run, and parse it in an upstream operator (upstream operator for an operator is the one which runs before this operator).  We can then just run a dummy queries for the tasks not required to run.
   - Monitoring:
     - The send_metrics_task tasks send metrics to a monitoring app like Grafana.
@@ -215,3 +210,11 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
     - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones involving ML (like finding outliers in count, or outliers in row values etc.).
   - Developer Productivity: 
     - Use client side, and server side git hooks to disallow code that has not passed in dev/uat.
+
+
+
+## Some Pratical Tips
+
+- Similarly, we can run the dev dags a few hours before prod, so that in case of bugs we get notified, and we fix the issues before the prod ones run (or atleast stop the prod dags to not dirty the data).
+- On a similar note, for dev or uat we do not need to load the entire data.  We just have to see if there's any change that might result in a bad data load.  Therefore, it's enough to load some partial subset of the data if possible.  This design does just that based on environment.
+- execution_date to rerun on particular date if dag run failed for some reason like Airflow going down
