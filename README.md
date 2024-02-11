@@ -33,7 +33,7 @@
   - By defining a schedule to run these on.
   - Manually.
   - Based on an external trigger. Ex. When data is loaded to a DB.
-  
+
 
 
 ## Installation
@@ -68,6 +68,7 @@ It's a good idea to have a local installation done in our personal machines for 
 Now knowing what Airflow is and having set it up, let's write some code.  We will start with simpler concepts and gradually move to more complex ones.  By the end of this tutorial we will write a complete dag which almost resembles a production grade Airflow app in the real world.
 
 
+
 ## Creating a basic DAG
 
 - To create a dag we just need to define a dag inside a python file along with a task.  A sample code is provided in src/dags/basic_dag.py
@@ -90,8 +91,18 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 
+## Operators
+- There are a large number of operators available, both from Airflow and third-party ones, that can be used to accomplish different kind of tasks.
+- Here is a non-exhaustive list of the same grouped by providers: https://registry.astronomer.io/modules?typeName=Operators&limit=24&sorts=updatedAt%3Adesc
+- It's generally a good idea to use as few operators as possible to keep the application simple.  Here's a list of operators in order of importance (arguably):
+  - PythonOperator: To run Python code
+  - LivyOperator: To interact with the Spark cluster over REST APIs
+  - BashOperator: We can instead use python commands like os.system or suprocess to run the bash commands
+
+
 
 ## Creating a basic DAG with schedule
+
 - Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular because instead of writing and maintaining our own schedule logic, we can simply rely on Airflow to do this for us.
 - Sample code: src/dags/scheduled_dag.py
 - Notes:
@@ -109,17 +120,8 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 
-
-## xcom and task-graph
-- Task graph is the directed acyclic graph of tasks.  This directed structure tells us the order in which the tasks will run.  The dependent tasks run only after the predecessors have finished running.  We can further control this to have one or all predecessors finish before the dependent runs.  Controls are also available to define the finish-states after which the dependents will start.  For example, run the dependents only after the predecessors finished running successfully.
-- Different tasks in a DAG can share information with each other during the DAG runs, and to achieve this Airflow provides a concept call xcom using which we can push and pull key-value pairs.
-- Sample code: src/dags/xcom_dag.py
-- Notes:
-  - This code shows the syntax to make task dependencies.  The syntax to make task2 dependent on task1 (i.e. task2 runs only after task1 finishes) task1 >> task2
-
-
-
 ## Creating a DAG that takes parameters
+
 - Being able to pass parameters is useful when we want to run dags manually.  This can be useful while testing for example, where we pass the dates for which to load data.
 - Sample code: src/dags/parameterized_dag.py
 - Notes
@@ -129,9 +131,10 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 
-
 ## Passing Admin Variables
+
 - The parameters mentioned above are passed to a DAG and only applicable to that particular dag, whereas Admin variables applies to all dags in an Airflow setup.  It can be useful for example to define the run environment (dev/uat/prod) for example.
+- To set these Admin Variables we need to put the key-value pairs inside Admin -> Variables.  The Admin menu is present in the top menu towards the top. 
 - Sample code:
   - src/dags/admin_variables_dag.py
   - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
@@ -145,20 +148,29 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 
 
+## xcom (cross-communication) and task-graph
+
+- Task graph is the directed acyclic graph of tasks.  This directed structure tells us the order in which the tasks will run.  The dependent tasks run only after the predecessors have finished running.  We can further control this to have one or all predecessors finish before the dependent runs.  Controls are also available to define the finish-states after which the dependents will start.  For example, run the dependents only after the predecessors finished running successfully.
+- Different tasks in a DAG can share information with each other during the DAG runs, and to achieve this Airflow provides a concept call xcom using which we can push and pull key-value pairs.
+- Sample code: src/dags/xcom_dag.py
+- Notes:
+  - This code shows the syntax to make task dependencies.  The syntax to make task2 dependent on task1 (i.e. task2 runs only after task1 finishes) task1 >> task2
+
+
 
 ## External Sensors
+
+- Whereas xcom helps tasks within a dag to communicate, External Sensors helps tasks across dags to communicate.
+- This can be helpful in situations where we can't put dependent tasks inside one dag (for example when those tasks are managed by different teams).
 - Sample code:
   - src/dags/external_sensor_callee_dag.py
   - src/dags/external_sensor_caller_dag.py
-- Notes:
-  - This helps us to start a dag run only when a different dag run finishes.
-  - This can be used in situations in which for example a task makes the data available, and the downstream task needs to operate on that data only when it's completely available.
-  - Managing External Sensors could be a bit tricky given wait times in queue, considering execution date and start date etc.  We can also maintain a persistent metadata table for runs, which can also store more metadata information like the config, state etc. of the callee service (like Spark).
+- Please note that managing External Sensors could be a bit tricky given several factors like wait times in queue, considering execution date and start date etc.  Instead of using this we can also think about maintaining a persistent metadata table for runs.  This can also store more metadata information like the config, state etc. of the callee service (like Spark).
 
 
 
+## Accessing runtime parameters
 
-## Accessing Parameters
 - Sample code: src/dags/accessing_parameters_dag.py
 - Notes:
   - A number of dag and task level details, along with their run level details are available and can be accessed.
@@ -166,18 +178,6 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
   - A non-exhaustive list of accessible variables can be found here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
   - Ex 1. We can check inside code if all the tasks have finished running, and only then send the status of all the tasks for monitoring (discussed later).
   - Ex 2. In case the dag failed to run on a given date because of Airflow going down, we can use the execution_date to run for that particular date.
-
-
-
-
-## Operators
-- There are a large number of operators available, both from Airflow and third-party ones, that can be used to accomplish different kind of tasks.
-- Here is a non-exhaustive list of the same grouped by providers: https://registry.astronomer.io/modules?typeName=Operators&limit=24&sorts=updatedAt%3Adesc
-- It's generally a good idea to use as few operators as possible to keep the application simple.  Here's a list of operators in order of importance (arguably):
-  - PythonOperator: To run Python code
-  - LivyOperator: To interact with the Spark cluster over REST APIs
-  - BashOperator: We can instead use python commands like os.system or suprocess to run the bash commands
-
 
 
 
