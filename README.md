@@ -180,41 +180,41 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 ## A Complete DAG
 
-- More or less we have learnt about all the concepts that we need to create a simple Airflow app that is almost production grade.  So let's bring all these concepts together, and write a complete dag.
+- More or less we have learnt all the concepts that we need to create a simple Airflow app that is almost production grade.  So let's bring all these concepts together, and write a complete dag.
 - Sample Code: src/dags/complete_lifecycle_dag.py
-- Understanding it bit by bit:
-  - This dag builds from a config file src/config/application_config.yaml which defines all dags and corresponding tasks.
-  - At the top level we have created 2 types of dags - short and long-running ones.  This is just to give an example that instead of repeating code we can create multiple dags from the same code.  This concept is called dynamic dags.  Moreover, this is common phenomenon in the real world where some tasks take longer than others.  In these situations we can start the long-running tasks only after the shorter ones finishes, so that we don't overwhelm the queue and make data available as soon as we can.
-  - In this design we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each task.
-    - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable because we can simply add to the config to add more tasks and all tasks are readily available in a single page to view/rerun.
-  - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
-  - To run only a subset of tasks:
-    - Use the clear button to clear only tasks that we wish to run.
-    - For dates which are not visible in the UI, we can pass the date as parameter but that will run all the tasks, and that is where the tasks being idempotent help, we can update the LOAD_DATA_METADATA_LOG accordingly to run only the tasks we wish to for a particular date.
-    - If at all we want to write a feature to run only a subset of tasks for a particular date, then we can simply pass the subset of tasks we wish to run, and parse it in an upstream operator (upstream operator for an operator is the one which runs before this operator).  We can then just run a dummy queries for the tasks not required to run.
+- Understanding the code bit by bit:
+  - The Config File:
+    - This dag builds from a config file src/config/application_config.yaml which defines all dags and corresponding tasks.
+    - At the top level we have created 2 types of dags - short and long-running ones.  This is just to give an example that instead of repeating code we can create multiple dags from the same code.  This concept is called dynamic dags.  Moreover, this is common phenomenon in the real world where some tasks take longer than others.  In these situations we can start the long-running tasks only after the shorter ones finishes, so that we don't overwhelm the queue and make data available as soon as we can.
+    - In this design we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each task.
+      - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable because we can simply add to the config to add more tasks and all tasks are readily available in a single page to view/rerun.
+  - The Task Script:
+    - The sample query provided in the load_data() function gives a generic idea on how to make the runs idempotent.  We basically check if run for that table+date already happened, and iff that didn't happen, we move forward.  Similarly, to handle partial runs we persist run log info only after full and successful runs.  And for partial runs, we delete all data for that table+date before moving forward.
   - Monitoring:
     - The send_metrics_task tasks send metrics to a monitoring app like Grafana.
     - We can then set alerts in the monitoring system to alert us for number of failures if any, or to alert us if the dag did not complete its run by the expected time.
     - trigger_rule = 'all_done' tells the task to run it only when all the upstream tasks have finished running
-  - For Airflow calling heavy jobs like Spark, we might want to limit the number of jobs we request, so as to not choke the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
-    - Please note that this is different from max_active_runs which says the number of dag runs itself that can be active. 
-    - It's generally a good idea to set max_active_runs=1, so that we run only one dag at a time, and if there's logic build upon previous runs, they work.  Plus debugging and monitoring gets easier with this. 
-  - Running adhoc scripts:
-    - At times we might want to run adhoc scripts to say create/delete table, or to update columns etc.  This can be done directly at the DB level, but it's better to make it go through Airflow so that it goes through the CI/CD pipeline of review/running-test-cases etc.
-    - To achieve this, we have a number of options:
-      - 1. Create a dag that takes the query as a parameter and runs it.
-      - 2. If there are a number of queries at once, then we can create a dag that dynamically create tasks on the fly by going through the all scripts in a adhoc-query-directory similar to how we read the yaml file in complete_lifecycle_dag.py
   - Data Quality Checks:
     - Data Quality checks are important to not only ensure that our Airflow jobs are running fine, but also in general to evaluate data from a business perspective i.e. to check if other data collection subsystems are running fine.
     - The Data Quality check jobs can be called after the expected time of completion of the dags, or using external-sensors.
     - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones involving ML (like finding outliers in count, or outliers in row values etc.).
-  - Developer Productivity: 
-    - Use client side, and server side git hooks to disallow code that has not passed in dev/uat.
 
 
 
-## Some Pratical Tips
+## Some Practical Tips
 
-- Similarly, we can run the dev dags a few hours before prod, so that in case of bugs we get notified, and we fix the issues before the prod ones run (or atleast stop the prod dags to not dirty the data).
-- On a similar note, for dev or uat we do not need to load the entire data.  We just have to see if there's any change that might result in a bad data load.  Therefore, it's enough to load some partial subset of the data if possible.  This design does just that based on environment.
+- It's a good idea to run the dev/uat dags a few hours before prod if possible so that we can detect problems early hand if any.
+- On a similar note, for dev or uat we do not need to load the entire data.  We just have to see if there's any change that might result in a bad data load.  Therefore, it's enough to load some partial subset of the data if possible and the code shows an example on how to achieve that using limit.
 - execution_date to rerun on particular date if dag run failed for some reason like Airflow going down
+- To run only a subset of tasks:
+    - Use the clear button to clear only tasks that we wish to run.
+    - For dates which are not visible in the UI, we can pass the date as parameter but that will run all the tasks, and that is where the tasks being idempotent help, we can update the LOAD_DATA_METADATA_LOG accordingly to run only the tasks we wish to for a particular date.
+    - If at all we want to write a feature to run only a subset of tasks for a particular date, then we can simply pass the subset of tasks we wish to run, and parse it in an upstream operator (upstream operator for an operator is the one which runs before this operator).  We can then just run a dummy queries for the tasks not required to run.
+- For Airflow calling heavy jobs like Spark, we might want to limit the number of jobs we request, so as to not choke the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
+    - Please note that this is different from max_active_runs which says the number of dag runs itself that can be active. 
+    - It's generally a good idea to set max_active_runs=1, so that we run only one dag at a time, and if there's logic build upon previous runs, they work.  Plus debugging and monitoring gets easier with this. 
+- Running adhoc scripts:
+  - At times we might want to run adhoc scripts to say create/delete table, or to update columns etc.  This can be done directly at the DB level, but it's better to make it go through Airflow so that it goes through the CI/CD pipeline of review/running-test-cases etc.
+  - To achieve this, we have a number of options:
+    - 1. Create a dag that takes the query as a parameter and runs it.
+    - 2. If there are a number of queries at once, then we can create a dag that dynamically create tasks on the fly by going through the all scripts in a adhoc-query-directory similar to how we read the yaml file in complete_lifecycle_dag.py
