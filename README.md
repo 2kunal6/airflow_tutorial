@@ -171,22 +171,21 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 ## Accessing runtime parameters
 
+- The Airflow UI provides a lot of information about the run status of dags, but it is also important to access those information via code so that we can troubleshoot if required.
+- This can be useful for example to send alerts in case of run failures (discussed later).
 - Sample code: src/dags/accessing_parameters_dag.py
-- Notes:
-  - A number of dag and task level details, along with their run level details are available and can be accessed.
-  - Accessing these variables within the code can help us write our logic based on these parameters.
-  - A non-exhaustive list of accessible variables can be found here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
-  - Ex 1. We can check inside code if all the tasks have finished running, and only then send the status of all the tasks for monitoring (discussed later).
-  - Ex 2. In case the dag failed to run on a given date because of Airflow going down, we can use the execution_date to run for that particular date.
+- Here's a non-exhaustive list of accessible variables both at dag and task level: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
 
 
 
 ## A Complete DAG
+
+- More or less we have learnt about all the concepts that we need to create a simple Airflow app that is almost production grade.  So let's bring all these concepts together, and write a complete dag.
 - Sample Code: src/dags/complete_lifecycle_dag.py
 - Notes:
-  - This dag brings together many things we learnt here.
   - This dag builds from a config file src/config/application_config.yaml
   - This config file defines all dags, and corresponding tasks.
+  - execution_date to rerun on particular date if dag run failed for some reason like Airflow going down
   - At the top level we have created 2 types of dags - short and long running ones. 
     - We can start the long running ones after the short running ones finishes, so that we don't overwhelm the queue.
   - Similarly, we can run the dev dags a few hours before prod, so that in case of bugs we get notified, and we fix the issues before the prod ones run (or atleast stop the prod dags to not dirty the data).
