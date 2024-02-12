@@ -93,21 +93,21 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 
 ## Operators
-- There are a large number of operators available, both from Airflow and third-party ones, that can be used to accomplish different kind of tasks.
-- Here is a non-exhaustive list of the same grouped by providers: https://registry.astronomer.io/modules?typeName=Operators&limit=24&sorts=updatedAt%3Adesc
-- It's generally a good idea to use as few operators as possible to keep the application simple.  Here's a list of operators in order of importance (arguably):
+- There are a large number of operators available provided out of the box both from Airflow and third-parties that can be used to accomplish different kind of tasks.  Apart from that we can also write our own operators with custom logic to achieve specific use-cases.  Having the ability to write our own operators makes Airflow very flexible.
+- Here is a non-exhaustive list of the some important opearators grouped by providers: https://registry.astronomer.io/modules?typeName=Operators&limit=24&sorts=updatedAt%3Adesc
+- Going through that entire list can be daunting.  Here's a list of some important operators that we use quite frequently:
   - PythonOperator: To run Python code
-  - LivyOperator: To interact with the Spark cluster over REST APIs
-  - BashOperator: We can instead use python commands like os.system or suprocess to run the bash commands
+  - BashOperator: To run bash commands
+  - LivyOperator: To run Spark code
 
 
 
 ## Creating a basic DAG with schedule
 
-- Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular because instead of writing and maintaining our own schedule logic, we can simply rely on Airflow to do this for us.
+- Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular because instead of writing and maintaining our own schedule logic, we can simply rely on Airflow to do this for us reliably.
 - Sample code: src/dags/scheduled_dag.py
 - Notes:
-  - start_date parameter is necessary, and it tells us the time from which the dag should run.
+  - start_date parameter is the time from which the dag should run and is a compulsory parameter.
   - After creating a scheduled dag we need to trigger it manually the first time.
   - use catch_up=False if you do not want to run the dag from the start_date, otherwise the dag will start running from the start_date to the present time. 
   - The dag only runs after the current interval is over.
@@ -116,26 +116,26 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 ![next_inteval_run](https://github.com/2kunal6/airflow_tutorial/assets/12296594/63958f64-1dc6-4627-a86c-57aeecc946ff)
 
-  - It is a good idea to schedule the dags based on UTC, so that it is more consistent with other external dependencies like Spark servers, monitoring systems, external dependencies to other dags etc. because otherwise it gets confusing when daylight savings go on or off. 
-  - It is important to make the code (which is called by the DAG) idempotent, so that unintended reruns do not dirty the data, especially in production.
+  - It is a good idea to schedule the dags based on UTC, so that it is more consistent with other external dependencies like Spark servers, monitoring systems, external dependencies to other dags etc. 
+  - It is important to make the code (which is called by the DAG's task) idempotent, so that unintended reruns do not dirty the data.
 
 
 
 ## Creating a DAG that takes parameters
 
-- Being able to pass parameters is useful when we want to run dags manually.  This can be useful while testing for example, where we pass the dates for which to load data.
+- Being able to pass parameters is useful when we want to run dags manually.  This can be useful in many situations like testing for example where we pass the dates for which to load data.
 - Sample code: src/dags/parameterized_dag.py
 - Notes
-  - It helps us provide runtime config through a UI form.
-  - The default values provided will be overriden by user passed params through the UI.
-  - The sample code shows all the 4 ways to access the parameters namely: params, jinja, context, kwargs
+  - We can pass the runtime config through a UI form or via Airflow CLI.
+  - The default values provided will be overriden by user passed parameter values.
+  - The sample code shows all the 4 ways to access the parameters, namely params, jinja, context, kwargs
 
 
 
 ## Passing Admin Variables
 
-- The parameters mentioned above are passed to a DAG and only applicable to that particular dag, whereas Admin variables applies to all dags in an Airflow setup.  It can be useful for example to define the run environment (dev/uat/prod) for example.
-- To set these Admin Variables we need to put the key-value pairs inside Admin -> Variables.  The Admin menu is present in the top menu towards the top. 
+- The parameters mentioned above are passed to a DAG and only applicable to that particular dag, whereas Admin variables applies to all dags in an Airflow cluster.  It can be useful parameters affecting all dags like the run environment (dev/uat/prod) for example.
+- To set these Admin Variables we need to put the key-value pairs inside Admin -> Variables.  The Admin menu is present in the main menu towards the top. 
 - Sample code:
   - src/dags/admin_variables_dag.py
   - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
@@ -145,7 +145,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 sudo rm -rf <airflow-installation-root-directory>/dags <airflow-installation-root-directory>/config 
 cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 ```
-  - We can tune these locations as per our taste.
+- We can tune these locations as per our taste.
 
 
 
