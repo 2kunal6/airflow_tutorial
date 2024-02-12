@@ -206,13 +206,13 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 ## Some Practical Tips
 
-- It's a good idea to run the dev/uat dags a few hours before prod if possible so that we can detect problems early hand if any.
-- On a similar note, for dev or uat we do not need to load the entire data if that's expensive.  We just have to see if there's any change that might result in a bad data load.  Therefore it's enough to load some partial subset of the data and the code shows an example on how to achieve that using limit.
-- It's a good idea to use execution_date to be used to load data for a particular day because it is consistent compared to other variables, even when runs do not happen.
-- At times our dags might not completely and successfully run, and in those cases we might have to run only a subset of tasks that failed.  To achieve that here are a few ideas:
+- It's a good idea to run the dev/uat dags a few hours before prod if possible, so that we can detect problems early hand if any.
+- On a similar note, for dev or uat we do not need to load the entire data if that's expensive.  We just have to see if there's any change that might result in a bad data load.  Therefore it's enough to load some subset of the data.  The complete_lifecycle_dag shows an example on how to achieve that using limit conditionally.
+- It's a good idea to use execution_date to load data for a particular day because it is more consistent compared to other variables, even when runs do not happen.
+- At times our dags might not completely and successfully run.  In those cases we might have to run only a subset of tasks that failed.  To achieve that here are a few ideas:
     - Use the clear button to clear only tasks that we wish to run.
     - For dates which are not visible in the UI, we can pass the date as parameter.  But doing that will run all the tasks.  Therefore we need to make the tasks idempotent. 
     - If at all we want to write a feature to run only a subset of tasks for a particular date, then we can simply pass the subset of tasks we wish to run, and parse it in an upstream operator (upstream operator for an operator is the one which runs before this operator).  We can then just run a dummy query for the tasks not required to run.
-- For Airflow calling costly jobs like Spark we might want to limit the number of jobs we request to not overwhelm the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
+- For tasks calling costly jobs like Spark we might want to limit the number of jobs we request to not overwhelm the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
     - Please note that this is different from max_active_runs which says the number of dag runs itself that can be active. 
     - It's generally a good idea to set max_active_runs=1, so that we run only one dag at a time to avoid confusion.
