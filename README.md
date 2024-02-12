@@ -8,6 +8,7 @@
 - Airflow is a tool to programmatically define workflows especially around data engineering pipelines.
 - Without Airflow, to create those workflows we would have to write and maintain complex scripts, cron jobs, stored procedures etc.  This complexity will compound if we would have to combine these disparate flows to achieve a single outcome.
 - There are many tools we can use to create data pipelines ranging from Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
+- Please note that all the sample code referenced here exists in the src folder of this git repo.
 
 
 
@@ -71,14 +72,14 @@ Now knowing what Airflow is and having set it up, let's write some code.  We wil
 
 ## Creating a basic DAG
 
-- To create a dag we just need to define a dag inside a python file along with a task.  A sample code is provided in src/dags/basic_dag.py
+- To create a basic dag we just need to define the dag (using a constructor) inside a python file along with a task.  A sample code is provided in src/dags/basic_dag.py
 - To view and run this dag, we just need to copy this python code in the Airflow server's dags folder.
   - Ex: To make it available in our local Airflow installation, just copy it into the dags folder of the local installation.
 ```
 cp src/dags/basic_dag.py <airflow-local-installation>/dags
 ```
 - After copying, the dag should be visible in the Airflow homepage at http://localhost:8080/home
-- Ideally, the dag should be visible momentarily or after a few minutes of delay, but if it takes longer than that, then we can simply restart the Airflow docker service to view it immediately.
+- Ideally, the dag should be visible momentarily or after a few minutes, but if it takes longer than that simply restart the Airflow docker service to view it immediately.
 - Once the dag is visible in the homepage, we can run it by clicking on the "Pause" button in the Actions column.
   
 ![A_basic_dag](https://github.com/2kunal6/airflow_tutorial/assets/12296594/f8e4294f-6d82-4bb7-a5b0-54880a1b2b8a)
