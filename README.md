@@ -5,21 +5,21 @@
 
 ## Introduction
 
-- Airflow is a tool to programmatically define workflows, especially used for data engineering pipelines.
-- Without Airflow, to achieve the same, we would have to write and maintain complex shell/python scripts, cron job logic, DB stored procedures etc.  This complexity would have been compounded if we would have to orchestrate these disparate flows to achieve a single outcome.
-- There are a lot many tools we can use to create data pipelines ranging form Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
+- Airflow is a tool to programmatically define workflows especially around data engineering pipelines.
+- Without Airflow, to create those workflows we would have to write and maintain complex scripts, cron jobs, stored procedures etc.  This complexity will compound if we would have to combine these disparate flows to achieve a single outcome.
+- There are many tools we can use to create data pipelines ranging from Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
 
 
 
 ## Basic Concepts
 
-- DAG: Collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid circular dependencies among tasks.  Here are a few features of the dag:
-  - retries: help us retry in case of dag-run failure to overcome temporary problems like server going down briefly.
-  - schedule: cron value that lets us schedule runs.
+- DAG: A DAG is a collection of Tasks that are configured in a Directed Acyclic Graph (DAG) structure.  The DAG structure is important to avoid ambiguity due to circular dependencies among tasks.  Here are a few important features of the dag:
+  - retries: it helps us automatically retry in case of temporary failures.
+  - schedule: cron value that lets us schedule runs at specified times.
 - Task: A single unit of work in an Airflow DAG
   - retries: retrying at task level
 - Operators: Operating modules that create a task.  
-  - There is an ocean of Operators available to achieve a range of tasks starting from an EmptyOperator (that literally does nothing), to specific tasks in specific domains like Slack, AWS, Spark etc.
+  - There are lots of Operators available for a wide range of tasks starting from an EmptyOperator (that literally does nothing), to specific tasks in specific domains like Slack, AWS, Spark etc.
 
 
 
@@ -28,7 +28,6 @@
 - We can access Airflow via the Airflow UI or the Command Line Interface.  
 - The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluating all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (helpful in case of sync failures etc.), color coded information about status of runs, and many more things.
 - In addition to above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.  This can be helpful for example when we just need to rerun only a few tasks.
-  - Using the clear button, we can run only a subset of tasks, if required.
 - The DAGs can be triggered in the following ways:
   - By defining a schedule to run these on.
   - Manually.
@@ -38,7 +37,8 @@
 
 ## Installation
 
-A basic non-robust and non-production-grade setup is quite simple using Docker via the following simple commands.  But please note thatyou need to install curl and docker before running the following commands.  Here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
+- A basic non-robust and non-production-grade setup is quite simple using Docker.  
+- Please note that you need to install curl and docker before running the following commands and here are the instructions to do that: https://github.com/2kunal6/util/blob/main/installations.txt
 ```
 mkdir airflow_local
 cd airflow_local
@@ -47,13 +47,13 @@ mkdir -p ./dags ./logs ./plugins ./config
 sudo docker compose up airflow-init
 sudo docker compose up
 ```
-It's a good idea to have a local installation done in our personal machines for faster POCs, especially when Airflow is hosted in cloud.
+- It's a good idea to have a local installation done in our personal machines for faster POCs instead of having to go to the cluster each time.
 
 #### Notes
-- Please use sudo for the docker command unless docker is configured to work as a non-root user.  More details here: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-- Without any modifications, you can view/manage the Airflow server now via http://localhost:8080
+- Please use sudo for the docker command unless docker is configured to work as a non-root user.  Here are more details on that: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
+- Once this setup is done without any modifications you can view/manage the Airflow server now via http://localhost:8080
   - Please use username=airflow and password=airflow
-- Now simply put your python dag files (which we will create later in this tutorial) into the dags folder created above.  Once we put these dag files in the dags folder created above, they will be available to view and run in the Airflow UI.
+- Now simply put your python dag files (which we will create later in this tutorial) into the dags folder created above.  Once we put these dag files in the dags folder created above, they will be available for viewing and running via the Airflow UI.
 - To clean up the environment run: sudo docker compose down --volumes --remove-orphans
 - More details and other installation methods can be found here in this page https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
