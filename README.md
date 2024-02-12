@@ -151,28 +151,29 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 ## xcom (cross-communication) and task-graph
 
-- Task graph is the directed acyclic graph of tasks.  This directed structure tells us the order in which the tasks will run.  The dependent tasks run only after the predecessors have finished running.  We can further control this to have one or all predecessors finish before the dependent runs.  Controls are also available to define the finish-states after which the dependents will start.  For example, run the dependents only after the predecessors finished running successfully.
+- Task graph is the directed acyclic graph of tasks.  This directed structure tells us the order in which the tasks will run.  The dependent tasks run only after the predecessors have finished running\*.
 - Different tasks in a DAG can share information with each other during the DAG runs, and to achieve this Airflow provides a concept call xcom using which we can push and pull key-value pairs.
 - Sample code: src/dags/xcom_dag.py
 - Notes:
-  - This code shows the syntax to make task dependencies.  The syntax to make task2 dependent on task1 (i.e. task2 runs only after task1 finishes) task1 >> task2
+  - This code also shows the syntax to make task dependencies.  The syntax to make task2 dependent on task1 (i.e. task2 runs only after task1 finishes) task1 >> task2
+  - \* We can further control this to have one or all predecessors finish before the dependent runs.  Controls are also available to define the finish-states after which the dependents will start (ex. run dependents only successful runs of predecessors).
 
 
 
 ## External Sensors
 
 - Whereas xcom helps tasks within a dag to communicate, External Sensors helps tasks across dags to communicate.
-- This can be helpful in situations where we can't put dependent tasks inside one dag (for example when those tasks are managed by different teams).
+- This can be helpful in situations where we can't put dependent tasks inside a different dag (for example when those tasks are managed by different teams).
 - Sample code:
   - src/dags/external_sensor_callee_dag.py
   - src/dags/external_sensor_caller_dag.py
-- Please note that managing External Sensors could be a bit tricky given several factors like wait times in queue, considering execution date and start date etc.  Instead of using this we can also think about maintaining a persistent metadata table for runs.  This can also store more metadata information like the config, state etc. of the callee service (like Spark).
+- Please note that managing External Sensors could be a bit tricky due to several factors like like wait times in queue, execution date, start date etc.  Therefore instead of using this we can also think about maintaining a persistent metadata table for runs which can also act as a log table.
 
 
 
 ## Accessing runtime parameters
 
-- The Airflow UI provides a lot of information about the run status of dags, but it is also important to access those information via code so that we can troubleshoot if required.
+- The Airflow UI provides a lot of information about the run status of dags but it is also important to access those information via code so that we can troubleshoot in runtime or automatically if required.
 - This can be useful for example to send alerts in case of run failures (discussed later).
 - Sample code: src/dags/accessing_parameters_dag.py
 - Here's a non-exhaustive list of accessible variables both at dag and task level: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
