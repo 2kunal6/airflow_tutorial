@@ -187,20 +187,20 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 - Understanding the code bit by bit:
   - The Config File:
     - This dag builds from a config file src/config/application_config.yaml which defines all dags and corresponding tasks.
-    - At the top level we have created 2 types of dags - short and long-running ones.  This is just to give an example that instead of repeating code we can create multiple dags from the same code.  This concept is called dynamic dags.  Moreover, this is common phenomenon in the real world where some tasks take longer than others.  In these situations we can start the long-running tasks only after the shorter ones finishes, so that we don't overwhelm the queue and make data available as soon as we can.
-    - In this design we have clubbed the tasks inside one dag.  The other option could have been to create separate dags for each task.
-      - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable because we can simply add to the config to add more tasks and all tasks are readily available in a single page to view/rerun.
+    - At the top level we have created 2 types of dags - short and long-running ones.  This is just to how we can create multiple dags using the same code to avoid code duplication.  Creating dags like this is called dynamic dag creation.  Moreover, this is a common phenomenon in the real world where some tasks take longer than others.  In these situations we can start the long-running tasks only after the shorter ones finishes, so that we don't overwhelm the queue and make data available as soon as we can.
+    - In this design we have clubbed the tasks inside one dag.  The other option would have been to create separate dags for each task.
+      - Both these designs have their pros and cons, but keeping all tasks in one dag makes it a bit more scalable (because we can simply add more tasks to the config) and all tasks are readily available in a single page to view/rerun.
   - The Task Script:
     - The sample query provided in the load_data() function shows a sample script and gives a generic idea on how to make the runs idempotent.  To make the runs idempotent we basically check if the run already happened on a particular day, and proceed iff that didn't.  
-    - Similarly, to handle partial runs we persist run log info only after complete successful runs.  We also need to delete/override all incomplete data to avoid dupes.
+    - Similarly, to handle partial runs we persist run log info only after complete successful runs.  We also need to delete/override all incomplete data to avoid dupes in case of partial runs.
   - Monitoring:
     - The send_metrics_task sends metrics to a monitoring system like Grafana.
     - We can then set alerts in the monitoring system to alert us for failures and unfinished runs.
     - trigger_rule = 'all_done' tells the task to run it only when all the upstream tasks have finished running
   - Data Quality Checks:
     - Data Quality checks are important to ensure that the Airflow jobs are running fine both from a technical pass/fail point of view and from a business point of view. 
-    - The Data Quality check jobs can be called after the job runs finishes.
-    - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones involving ML (like finding outliers in count, or outliers in row values etc.).
+    - The Data Quality check jobs can be called after the job runs finish.
+    - Data Quality checks can range from simple count checks, to checking non-null values, to complicated ones like checking for outliers etc. which we can analyze using ML algorithms.
 
 
 
