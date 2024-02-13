@@ -5,9 +5,9 @@
 
 ## Introduction
 
-- Airflow is a tool to programmatically define workflows especially around data engineering pipelines.
+- Airflow is a tool to programmatically define workflows and it is especially used for data engineering tasks.
 - Without Airflow, to create those workflows we would have to write and maintain complex scripts, cron jobs, stored procedures etc.  This complexity will compound if we would have to combine these disparate flows to achieve a single outcome.
-- There are many tools we can use to create data pipelines ranging from Temporal to shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
+- There are many tools we can use to create data pipelines ranging from Temporal to Shell scripts to as far as Jenkins, but Airflow is open-source, flexible, and has a lot of community support.
 - Please note that all the sample code referenced here exists in the src folder of this git repo.
 
 
@@ -20,17 +20,17 @@
 - Task: A single unit of work in an Airflow DAG
   - retries: retrying at task level
 - Operators: Operating modules that create a task.  
-  - There are lots of Operators available for a wide range of tasks starting from an EmptyOperator (that literally does nothing), to specific tasks in specific domains like Slack, AWS, Spark etc.
+  - There are lots of Operators available for a wide range of tasks starting from an EmptyOperator (that literally does nothing) to very specific tasks in specific domains like Slack, AWS, Spark etc.
 
 
 
-## How to access?
+## How to access Airflow?
 
 - We can access Airflow via the Airflow UI or the Command Line Interface.  
 - The Airflow UI is simple and intuitive, but at the same time it contains a lot of information like run info (success, failure, execution time, next run time etc.), xcom values passed between tasks, rendered template after evaluating all variables, the graph structure of the dag, task durations, the actual code picked from the airflow's dag location (helpful in case of sync failures etc.), color coded information about status of runs, and many more things.
-- In addition to above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.  This can be helpful for example when we just need to rerun only a few tasks.
+- In addition to the above, the UI also provides many different functionalities like trigger dag, delete dag, filters etc.  One particularly important functionality is 'clear'.  The clear functionality exists for both dags and tasks, and by clearing we can rerun dags/tasks in case of failures.
 - The DAGs can be triggered in the following ways:
-  - By defining a schedule to run these on.
+  - By defining a schedule to run on.
   - Manually.
   - Based on an external trigger. Ex. When data is loaded to a DB.
 
@@ -52,7 +52,7 @@ sudo docker compose up
 
 #### Notes
 - Please use sudo for the docker command unless docker is configured to work as a non-root user.  Here are more details on that: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-- Once this setup is done without any modifications you can view/manage the Airflow server now via http://localhost:8080
+- Once this setup is done without any modifications, the Airflow server becomes available at http://localhost:8080
   - Please use username=airflow and password=airflow
 - Now simply put your python dag files (which we will create later in this tutorial) into the dags folder created above.  Once we put these dag files in the dags folder created above, they will be available for viewing and running via the Airflow UI.
 - To clean up the environment run: sudo docker compose down --volumes --remove-orphans
@@ -66,7 +66,7 @@ sudo docker compose up
 ![home](https://github.com/2kunal6/airflow_tutorial/assets/12296594/9dab61bc-dc91-41bc-9e4d-fccfb38b6b8b)
 
 
-Now knowing what Airflow is and having set it up, let's write some code.  We will start with simpler concepts and gradually move to more complex ones.  By the end of this tutorial we will write a complete dag which almost resembles a production grade Airflow app in the real world.
+Now knowing what Airflow is and having set it up, let's write some code.  We will start with simpler concepts and gradually move to more complex ones.  By the end of this tutorial we will write a complete dag which almost resembles a production grade Airflow server in the real world.
 
 
 
@@ -104,7 +104,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 ## Creating a basic DAG with schedule
 
-- Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular because instead of writing and maintaining our own schedule logic, we can simply rely on Airflow to do this for us reliably.
+- Scheduled dags are dags that run automatically at the defined schedule.  This important feature is the reason why Airflow is so popular.  Instead of writing and maintaining our own scheduling logic, we can simply rely on Airflow to do this for us reliably.
 - Sample code: src/dags/scheduled_dag.py
 - Notes:
   - start_date parameter is the time from which the dag should run and is a compulsory parameter.
