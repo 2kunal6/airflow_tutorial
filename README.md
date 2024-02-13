@@ -123,7 +123,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 ## Creating a DAG that takes parameters
 
-- Being able to pass parameters is useful when we want to run dags manually.  This can be useful in many situations like testing for example where we pass the dates for which to load data.
+- Being able to pass parameters is useful when we want to run dags manually for testing for example.
 - Sample code: src/dags/parameterized_dag.py
 - Notes
   - We can pass the runtime config through a UI form or via Airflow CLI.
@@ -134,13 +134,13 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
 
 ## Passing Admin Variables
 
-- The parameters mentioned above are passed to a DAG and only applicable to that particular dag, whereas Admin variables applies to all dags in an Airflow cluster.  It can be useful parameters affecting all dags like the run environment (dev/uat/prod) for example.
+- The parameters mentioned above are passed to a DAG and only applicable to that particular dag but Admin variables applies to all dags in an Airflow cluster.  We can use it to set parameters that affects all dags like the run environment (dev/uat/prod).
 - To set these Admin Variables we need to put the key-value pairs inside Admin -> Variables.  The Admin menu is present in the main menu towards the top. 
 - Sample code:
   - src/dags/admin_variables_dag.py
   - src/config/config.yaml -> to be copied to <airflow-installation-root-directory>/config
   - src/dags/util/load_config.py
-  - The dags and config folders can be directly copied to <airflow-installation-root-directory>.  Please note the folders which are in the system path.
+  - The dags and config folders can be directly copied to the local Airflow installation location mentioned above.  Please note the folders which are in the system path.
 ```
 sudo rm -rf <airflow-installation-root-directory>/dags <airflow-installation-root-directory>/config 
 cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
@@ -167,7 +167,7 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 - Sample code:
   - src/dags/external_sensor_callee_dag.py
   - src/dags/external_sensor_caller_dag.py
-- Please note that managing External Sensors could be a bit tricky due to several factors like like wait times in queue, execution date, start date etc.  Therefore instead of using this we can also think about maintaining a persistent metadata table for runs which can also act as a log table.
+- Please note that managing External Sensors could be a bit tricky due to several factors like wait times in queue, execution date, start date etc.  Therefore instead of using this we can also think about maintaining a persistent metadata table for runs which can also act as a log table.
 
 
 
