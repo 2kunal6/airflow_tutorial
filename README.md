@@ -90,7 +90,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
   
   ![Dag_details](https://github.com/2kunal6/airflow_tutorial/assets/12296594/6b15d194-56ec-4b69-af55-8d591be9cfe2)
 
-
+- default_args: Configuration values that we can pass to the DAG constructor so that it can be passed to each task's constructor. 
 
 ## Operators
 - There are a large number of operators available provided out of the box both from Airflow and third-parties that can be used to accomplish different kind of tasks.  Apart from that we can also write our own operators with custom logic to achieve specific use-cases.  Having the ability to write our own operators makes Airflow very flexible.
@@ -99,7 +99,7 @@ cp src/dags/basic_dag.py <airflow-local-installation>/dags
   - PythonOperator: To run Python code
   - BashOperator: To run bash commands
   - LivyOperator: To run Spark code
-
+- How to create a custom operator: https://airflow.apache.org/docs/apache-airflow/stable/howto/custom-operator.html
 
 
 ## Creating a basic DAG with schedule
