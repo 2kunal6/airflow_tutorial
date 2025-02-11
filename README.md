@@ -217,3 +217,18 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 - For tasks calling costly jobs like Spark we might want to limit the number of jobs we request to not overwhelm the system/queue.  This can be handled by setting max_active_tasks which limits the maximum number of job requests a dag can make via tasks.
     - Please note that this is different from max_active_runs which says the number of dag runs itself that can be active. 
     - It's generally a good idea to set max_active_runs=1, so that we run only one dag at a time to avoid confusion.
+
+
+## Airflow Architecture
+- Scheduler: It continuously scans the dags directory to schedule tasks based on their dependencies and schedule. It interacts with the metadata database to store and retrieve task state and execution information.
+- Metadata DB: It stores DAGs, task status, execution history etc., typically using MySQL or Postgres.  It also helps Airflow recover from crash by using the persistent state.
+- WebServer: A Flask-based web interface for monitoring DAGs, viewing logs, and manually triggering jobs.  It also displays information from the Metadata server.
+- Executors: It allocates resources and runs tasks.  Types:
+    - LocalExecutor – Runs tasks in parallel on a single machine.
+    - CeleryExecutor – Distributes tasks across multiple worker nodes using Celery and Redis/RabbitMQ.
+    - KubernetesExecutor – Dynamically creates Kubernetes pods for each task, providing scalability. 
+- Worker Nodes: Executes the task by reading the code from the Metadata DB.
+- Message Broker: Redis or RabbitMQ is used for task queuing.  The Scheduler sends tasks to the broker, and workers pick them up.
+
+
+
