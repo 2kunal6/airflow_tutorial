@@ -233,3 +233,6 @@ cp -r airflow_tutorial/src/* <airflow-installation-root-directory>
 
 ## TaskFlow API
 - The TaskFlow API is a functional API for using decorators to define DAGs and tasks, which simplifies the process for passing data between tasks and defining dependencies. You can use TaskFlow decorator functions (for example, @task) to pass data between tasks by providing the output of one task as an argument to another task. Decorators are a simpler, cleaner way to define your tasks and DAGs and can be used in combination with traditional operators.
+
+  ## Plugins
+  To integrate third party functionality like Hive.
